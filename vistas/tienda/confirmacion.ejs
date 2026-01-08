@@ -1,0 +1,14 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h1 class="titulo">¡Gracias por tu compra!</h1>
+  <p>Cliente: <%= nombre_completo %></p>
+  <p>Método de pago: <%= metodo_pago %></p>
+  <p>Total pagado: $<%= Number(total).toFixed(2) %></p>
+
+  <a class="btn" href="/productos">Seguir comprando</a>
+  <!-- ✅ Botón que descarga automáticamente el PDF -->
+  <a class="btn secundario" href="/carrito/ticket">Descargar ticket (PDF)</a>
+</section>
+
+<%- include('../parciales/pie') %>

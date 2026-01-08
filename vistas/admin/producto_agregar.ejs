@@ -1,0 +1,21 @@
+<%- include('../layout', { titulo: titulo }, { body:
+  `<section class="panel">
+    <h2 class="titulo">Agregar producto</h2>
+    <form class="form" method="post" action="/admin/productos/agregar" enctype="multipart/form-data">
+      <label>Nombre</label><input class="input" type="text" name="nombre" required>
+      <label>Descripción</label><textarea class="input" name="descripcion"></textarea>
+      <label>Precio</label><input class="input" type="number" step="0.01" name="precio" required>
+      <label>Categoría</label>
+      <select class="input" name="categoria_id">
+        ${categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('')}
+      </select>
+      <label>Stock</label><input class="input" type="number" name="stock" value="0">
+      <label>Marca</label><input class="input" type="text" name="marca">
+      <label>Proveedor</label><input class="input" type="text" name="proveedor">
+      <label>Fecha de registro</label><input class="input" type="date" name="fecha_registro" required>
+      <label>Imagen del producto (se guardará en /publico/uploads)</label>
+      <input class="input" type="file" name="imagen" accept="image/*">
+      <button class="btn" type="submit">Guardar</button>
+    </form>
+  </section>`
+} ) %>

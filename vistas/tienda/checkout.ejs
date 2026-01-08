@@ -1,0 +1,35 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Confirmar compra</h2>
+
+  <% if (!carrito || carrito.length === 0) { %>
+    <p>Tu carrito está vacío. <a href="/productos">Ver productos</a></p>
+  <% } else { %>
+    <div class="block">
+      <div class="block-title">Resumen</div>
+      <ul>
+        <% carrito.forEach(i => { %>
+          <li><%= i.cantidad %> x <%= i.nombre %> - $<%= (Number(i.precio) * i.cantidad).toFixed(2) %></li>
+        <% }) %>
+      </ul>
+      <div class="total">Total: $<%= Number(total).toFixed(2) %></div>
+    </div>
+
+    <form class="form" method="post" action="/carrito/confirmar">
+      <label>Nombre completo</label>
+      <input class="input" type="text" name="nombre_completo" required>
+
+      <label>Método de pago</label>
+      <select class="input" name="metodo_pago" required>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta">Tarjeta</option>
+        <option value="Transferencia">Transferencia</option>
+      </select>
+
+      <button class="btn" type="submit">Pagar</button>
+    </form>
+  <% } %>
+</section>
+
+<%- include('../parciales/pie') %>

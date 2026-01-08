@@ -1,0 +1,5 @@
+{
+  "watch": ["app.js", "rutas", "controladores", "vistas"],
+  "ext": "js,ejs",
+  "ignore": ["publico/uploads/*"]
+}

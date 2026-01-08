@@ -1,0 +1,21 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h1 class="titulo">Bienvenido a Canelitos</h1>
+  <!-- Banner corregido -->
+  <img class="banner" src="/uploads/banner.jpg" alt="Banner">
+
+  <div class="grid">
+    <% productos.forEach(p => { %>
+      <div class="card">
+        <img class="card-img" src="<%= p.ruta_imagen ? '/uploads/' + p.ruta_imagen : '/uploads/placeholder.png' %>" alt="<%= p.nombre %>">
+        <div class="card-titulo"><%= p.nombre %></div>
+        <div class="card-sub">Categoría: <%= p.nombre_categoria || 'N/A' %></div>
+        <div class="card-precio">$<%= Number(p.precio).toFixed(2) %></div>
+        <a class="btn" href="/producto/<%= p.id %>">Ver</a>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../parciales/pie') %>

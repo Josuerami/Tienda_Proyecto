@@ -1,0 +1,16 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h1 class="titulo"><%= producto.nombre %></h1>
+  <img class="card-img" src="<%= producto.ruta_imagen ? '/uploads/' + producto.ruta_imagen : '/uploads/placeholder.png' %>" alt="<%= producto.nombre %>">
+
+  <p><strong>Precio:</strong> $<%= Number(producto.precio).toFixed(2) %></p>
+  <p><strong>Categoría:</strong> <%= producto.nombre_categoria || 'N/A' %></p>
+  <p><strong>Descripción:</strong> <%= producto.descripcion || 'Sin descripción' %></p>
+
+  <form method="post" action="/carrito/agregar/<%= producto.id %>">
+    <button class="btn" type="submit">Agregar al carrito</button>
+  </form>
+</section>
+
+<%- include('../parciales/pie') %>

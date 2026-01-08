@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda Canelitos</title>
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/impresion.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <div class="logo-texto">Canelitos</div>
+  <nav class="nav">
+    <a class="inline" href="/">Inicio</a>
+    <a class="inline" href="/productos">Productos</a>
+    <a class="inline" href="/acerca">Acerca</a>
+    <a class="inline" href="/contacto">Contacto</a>
+    <% if (rol === 'admin') { %><a class="inline" href="/admin">Admin</a><% } %>
+    <% if (rol === 'vendedor') { %><a class="inline" href="/vendedor">Vendedor</a><% } %>
+    <a class="inline" href="/carrito">Carrito (<%= (carrito||[]).length %>)</a>
+    <% if (!usuario) { %>
+      <a class="inline" href="/auth/login">Entrar</a>
+      <a class="inline" href="/auth/registro">Registro</a>
+    <% } else { %>
+      <form class="inline" method="post" action="/auth/salir">
+        <button class="btn secundario" type="submit">Salir</button>
+      </form>
+    <% } %>
+  </nav>
+</header>
+
+<div class="pagina">

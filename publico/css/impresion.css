@@ -1,0 +1,18 @@
+@media print {
+  body { background: #fff; }
+  .encabezado, .pie, .btn, .acciones { display: none !important; }
+  .ticket {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  .ticket-tabla th, .ticket-tabla td {
+    font-size: 12px;
+    padding: 4px;
+  }
+  .ticket-total {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}

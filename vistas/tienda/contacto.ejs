@@ -1,0 +1,26 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h1 class="titulo">Contáctanos</h1>
+  <p>Si tienes dudas o comentarios, completa el formulario y te responderemos pronto.</p>
+
+  <!-- ✅ Mensaje de confirmación -->
+  <% if (ok) { %>
+    <p class="alerta">✅ Tu mensaje fue enviado correctamente.</p>
+  <% } %>
+
+  <form class="form" method="post" action="/contacto/enviar">
+    <label>Nombre</label>
+    <input class="input" type="text" name="nombre" required>
+
+    <label>Correo electrónico</label>
+    <input class="input" type="email" name="email" required>
+
+    <label>Mensaje</label>
+    <textarea class="input" name="mensaje" rows="5" required></textarea>
+
+    <button class="btn" type="submit">Enviar</button>
+  </form>
+</section>
+
+<%- include('../parciales/pie') %>

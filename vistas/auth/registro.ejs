@@ -1,0 +1,18 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h1 class="titulo">Registro</h1>
+  <% if (typeof error !== 'undefined') { %>
+    <p class="notice"><%= error %></p>
+  <% } %>
+  <form method="post" action="/auth/registro">
+    <input class="input" type="text" name="nombre" placeholder="Nombre" required>
+    <input class="input" type="text" name="apellido_paterno" placeholder="Apellido paterno" required>
+    <input class="input" type="text" name="apellido_materno" placeholder="Apellido materno">
+    <input class="input" type="email" name="email" placeholder="Correo electrónico" required>
+    <input class="input" type="password" name="password" placeholder="Contraseña" required>
+    <button class="btn" type="submit">Registrarse</button>
+  </form>
+</section>
+
+<%- include('../parciales/pie') %>
