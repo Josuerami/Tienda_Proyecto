@@ -1,0 +1,12 @@
+<h1>Mi cuenta</h1>
+
+<form method="POST" action="/auth/cuenta/editar">
+  <input name="nombre" value="<%= usuario.nombre %>" required>
+  <input name="apellido_paterno" value="<%= usuario.apellido_paterno %>">
+  <input name="apellido_materno" value="<%= usuario.apellido_materno %>">
+  <button>Actualizar</button>
+</form>
+
+<form method="POST" action="/auth/cuenta/eliminar">
+  <button>Eliminar cuenta</button>
+</form>
