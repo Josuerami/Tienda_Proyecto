@@ -11,6 +11,12 @@ function esAdmin(req, res, next) {
 router.get('/', esAdmin, ctrl.panel);
 router.get('/productos/agregar', esAdmin, ctrl.formAgregarProducto);
 router.post('/productos/agregar', esAdmin, ctrl.middlewareSubida, ctrl.agregarProducto); // AQUÍ SUBES LA IMAGEN
+// Editar producto
+router.get('/productos/editar/:id', esAdmin, ctrl.formEditarProducto);
+router.post('/productos/editar/:id', esAdmin, ctrl.middlewareSubida, ctrl.editarProducto);
+// Eliminar producto
+router.post('/productos/eliminar', esAdmin, ctrl.eliminarProducto);
+
 router.get('/empleados/agregar', esAdmin, ctrl.formAgregarEmpleado);
 router.post('/empleados/agregar', esAdmin, ctrl.agregarEmpleado);
 router.get('/empleados', esAdmin, ctrl.listarEmpleados);

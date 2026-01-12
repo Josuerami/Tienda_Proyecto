@@ -44,6 +44,33 @@ exports.agregarProducto = async (req, res) => {
   res.redirect('/admin');
 };
 
+// Mostrar formulario de edición de producto
+exports.formEditarProducto = async (req, res) => {
+  const { id } = req.params;
+  const producto = await Producto.porId(id);
+  if (!producto) return res.redirect('/admin');
+  const categorias = await Categoria.todas();
+  res.render('admin/producto_editar', { titulo: 'Editar producto', producto, categorias });
+};
+
+// Procesar edición de producto
+exports.editarProducto = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, descripcion, precio, categoria_id, stock, marca, proveedor, fecha_registro } = req.body;
+  const producto = await Producto.porId(id);
+  if (!producto) return res.redirect('/admin');
+  const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : producto.ruta_imagen;
+  await Producto.actualizar(id, { nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro });
+  res.redirect('/admin');
+};
+
+// Eliminar producto (soft delete)
+exports.eliminarProducto = async (req, res) => {
+  const { producto_id } = req.body;
+  await Producto.eliminar(producto_id);
+  res.redirect('/admin/inventario');
+};
+
 exports.formAgregarEmpleado = (req, res) => {
   res.render('admin/empleado_agregar', { titulo: 'Agregar Empleados' });
 };
