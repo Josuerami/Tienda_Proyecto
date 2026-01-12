@@ -1,19 +1,21 @@
-<%- include('../layout', { titulo: titulo }, { body:
-  `<section class="panel">
-    <h1>Mi cuenta</h1>
+<%- include('../parciales/encabezado') %>
 
-    <form method="POST" action="/auth/cuenta/editar">
-      <label>Nombre</label>
-      <input name="nombre" value="<%= usuario.nombre %>" required>
-      <label>Apellido paterno</label>
-      <input name="apellido_paterno" value="<%= usuario.apellido_paterno %>">
-      <label>Apellido materno</label>
-      <input name="apellido_materno" value="<%= usuario.apellido_materno %>">
-      <button class="btn">Actualizar</button>
-    </form>
+<section class="panel">
+  <h1>Mi cuenta</h1>
 
-    <form method="POST" action="/auth/cuenta/eliminar" onsubmit="return confirm('¿Eliminar cuenta? Esta acción no se puede deshacer.')">
-      <button class="btn btn-danger">Eliminar cuenta</button>
-    </form>
-  </section>`
-} ) %>
+  <form method="POST" action="/auth/cuenta/editar">
+    <label>Nombre</label>
+    <input name="nombre" value="<%= usuario.nombre %>" required>
+    <label>Apellido paterno</label>
+    <input name="apellido_paterno" value="<%= usuario.apellido_paterno %>">
+    <label>Apellido materno</label>
+    <input name="apellido_materno" value="<%= usuario.apellido_materno %>">
+    <button class="btn">Actualizar</button>
+  </form>
+
+  <form method="POST" action="/auth/cuenta/eliminar" onsubmit="return confirm('¿Eliminar cuenta? Esta acción no se puede deshacer.')">
+    <button class="btn btn-danger">Eliminar cuenta</button>
+  </form>
+</section>
+
+<%- include('../parciales/pie') %>

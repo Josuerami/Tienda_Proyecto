@@ -58,6 +58,15 @@ exports.registrar = async (req, res) => {
       });
     }
 
+    // Verificar si el email ya existe
+    const existe = await Usuario.buscarPorEmail(email);
+    if (existe) {
+      return res.render('auth/registro', {
+        titulo: 'Registro',
+        error: 'El email ya está registrado'
+      });
+    }
+
     const hash = await bcrypt.hash(password, 10);
 
     const usuario = await Usuario.crear({
@@ -69,6 +78,7 @@ exports.registrar = async (req, res) => {
       rol: 'cliente'
     });
 
+    // Guardar objeto completo en sesión
     req.session.usuario = usuario;
     req.session.rol = 'cliente';
 
@@ -79,6 +89,13 @@ exports.registrar = async (req, res) => {
 
   } catch (err) {
     console.error('Error en registro:', err);
+    // Manejar duplicados por si falla la comprobación previa
+    if (err && err.code === 'ER_DUP_ENTRY') {
+      return res.render('auth/registro', {
+        titulo: 'Registro',
+        error: 'El email ya está registrado'
+      });
+    }
     res.status(500).send('Error interno al registrar');
   }
 };
