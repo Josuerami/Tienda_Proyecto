@@ -15,7 +15,7 @@
     <a class="inline" href="/productos">Productos</a>
     <a class="inline" href="/acerca">Acerca</a>
     <a class="inline" href="/contacto">Contacto</a>
-    <% if (rol === 'admin') { %><a class="inline" href="/admin">Admin</a><% } %>
+    <% if (rol === 'admin' || rol === 'vendedor') { %><a class="inline" href="/admin">Admin</a><% } %>
     <% if (rol === 'vendedor') { %><a class="inline" href="/vendedor">Vendedor</a><% } %>
     <a class="inline" href="/carrito">Carrito (<%= (carrito||[]).length %>)</a>
     <% if (!usuario) { %>

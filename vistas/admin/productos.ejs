@@ -1,0 +1,51 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Productos</h2>
+  <a class="btn" href="/admin/productos/agregar">Agregar nuevo producto</a>
+
+  <% if (productos && productos.length) { %>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% productos.forEach(function(p){ %>
+          <tr>
+            <td><%= p.id %></td>
+            <td><%= p.nombre %></td>
+            <td><%= p.nombre_categoria || 'N/A' %></td>
+            <td>$<%= Number(p.precio).toFixed(2) %></td>
+            <td><%= p.stock %></td>
+            <td><%= p.activo ? 'Sí' : 'No' %></td>
+            <td>
+              <a class="btn" href="/admin/productos/editar/<%= p.id %>">Editar</a>
+              <% if (p.activo) { %>
+                <form style="display:inline-block" method="post" action="/admin/productos/eliminar" onsubmit="return confirm('¿Eliminar producto?')">
+                  <input type="hidden" name="producto_id" value="<%= p.id %>">
+                  <button class="btn btn-danger" type="submit">Eliminar</button>
+                </form>
+              <% } else { %>
+                <form style="display:inline-block" method="post" action="/admin/productos/restaurar">
+                  <input type="hidden" name="producto_id" value="<%= p.id %>">
+                  <button class="btn" type="submit">Restaurar</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No hay productos registrados.</p>
+  <% } %>
+</section>
+
+<%- include('../parciales/pie') %>

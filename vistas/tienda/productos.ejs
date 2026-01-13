@@ -11,6 +11,13 @@
         <div class="card-sub">Categoría: <%= p.nombre_categoria || 'N/A' %></div>
         <div class="card-precio">$<%= Number(p.precio).toFixed(2) %></div>
         <a class="btn" href="/producto/<%= p.id %>">Ver</a>
+        <% if (rol === 'admin' || rol === 'vendedor') { %>
+          <a class="btn" href="/admin/productos/editar/<%= p.id %>">Editar</a>
+          <form style="display:inline-block" method="post" action="/admin/productos/eliminar" onsubmit="return confirm('¿Eliminar producto?')">
+            <input type="hidden" name="producto_id" value="<%= p.id %>">
+            <button class="btn btn-danger" type="submit">Eliminar</button>
+          </form>
+        <% } %>
         <form method="post" action="/carrito/agregar/<%= p.id %>">
           <button class="btn secundario" type="submit">Agregar al carrito</button>
         </form>

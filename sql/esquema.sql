@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS productos (
   proveedor VARCHAR(255),
   fecha_registro DATE,
   activo TINYINT(1) DEFAULT 1,
-  FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+  vendedor_id INT DEFAULT NULL,
+  FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+  FOREIGN KEY (vendedor_id) REFERENCES usuarios(id)
 );
 
 -- Tabla de empleados

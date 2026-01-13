@@ -1,0 +1,80 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Inventario</h2>
+
+  <form method="post" action="/admin/inventario/consultar" class="form-inline">
+    <label>Buscar producto por nombre</label>
+    <input class="input" type="text" name="nombre" value="">
+    <button class="btn" type="submit">Consultar</button>
+  </form>
+
+  <% if (consulta && consulta.length) { %>
+    <h3>Resultados de búsqueda</h3>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% consulta.forEach(function(p){ %>
+          <tr>
+            <td><%= p.id %></td>
+            <td><%= p.nombre %></td>
+            <td>$<%= Number(p.precio).toFixed(2) %></td>
+            <td><%= p.stock %></td>
+            <td>
+              <form style="display:inline-block" method="post" action="/admin/inventario/modificar">
+                <input type="hidden" name="producto_id" value="<%= p.id %>">
+                <input type="number" name="stock" value="<%= p.stock %>" min="0">
+                <button class="btn" type="submit">Actualizar</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <h3>Entradas de inventario</h3>
+  <% if (inventario && inventario.length) { %>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Producto</th>
+          <th>Unidades</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% inventario.forEach(function(i){ %>
+          <tr>
+            <td><%= i.id %></td>
+            <td><%= i.nombre_producto %></td>
+            <td><%= i.unidades_exhibicion %></td>
+            <td><%= i.fecha_compra ? (new Date(i.fecha_compra)).toISOString().split('T')[0] : '' %></td>
+            <td><%= i.estado %></td>
+            <td>
+              <form method="post" action="/admin/inventario/eliminar" onsubmit="return confirm('¿Eliminar producto del inventario y/o producto?')">
+                <input type="hidden" name="producto_id" value="<%= i.producto_id %>">
+                <button class="btn btn-danger" type="submit">Eliminar producto</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No hay registros de inventario.</p>
+  <% } %>
+</section>
+
+<%- include('../parciales/pie') %>

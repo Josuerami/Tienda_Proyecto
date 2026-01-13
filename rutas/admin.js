@@ -8,14 +8,21 @@ function esAdmin(req, res, next) {
   return res.redirect('/');
 }
 
+function esAdminOVendedor(req, res, next) {
+  if (req.session.rol === 'admin' || req.session.rol === 'vendedor') return next();
+  return res.redirect('/');
+}
+
 router.get('/', esAdmin, ctrl.panel);
-router.get('/productos/agregar', esAdmin, ctrl.formAgregarProducto);
-router.post('/productos/agregar', esAdmin, ctrl.middlewareSubida, ctrl.agregarProducto); // AQUÍ SUBES LA IMAGEN
+router.get('/productos', esAdminOVendedor, ctrl.listarProductos);
+router.get('/productos/agregar', esAdminOVendedor, ctrl.formAgregarProducto);
+router.post('/productos/agregar', esAdminOVendedor, ctrl.middlewareSubida, ctrl.agregarProducto); // AQUÍ SUBES LA IMAGEN
 // Editar producto
-router.get('/productos/editar/:id', esAdmin, ctrl.formEditarProducto);
-router.post('/productos/editar/:id', esAdmin, ctrl.middlewareSubida, ctrl.editarProducto);
+router.get('/productos/editar/:id', esAdminOVendedor, ctrl.formEditarProducto);
+router.post('/productos/editar/:id', esAdminOVendedor, ctrl.middlewareSubida, ctrl.editarProducto);
 // Eliminar producto
-router.post('/productos/eliminar', esAdmin, ctrl.eliminarProducto);
+router.post('/productos/eliminar', esAdminOVendedor, ctrl.eliminarProducto);
+router.post('/productos/restaurar', esAdmin, ctrl.restaurarProducto);
 
 router.get('/empleados/agregar', esAdmin, ctrl.formAgregarEmpleado);
 router.post('/empleados/agregar', esAdmin, ctrl.agregarEmpleado);

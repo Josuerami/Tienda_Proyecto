@@ -5,21 +5,21 @@ const db = require('../config/db');
 
 // Página de inicio
 exports.inicio = async (req, res) => {
-  const productos = await Producto.todos();
+  const productos = (req.session.rol === 'admin' || req.session.rol === 'vendedor') ? await Producto.todosAdmin() : await Producto.todos();
   res.render('tienda/inicio', { titulo: 'Tienda Canelitos', productos });
 };
 
 // Listar productos
 exports.listarProductos = async (req, res) => {
   const { q } = req.query;
-  const productos = await Producto.todos(q || '');
+  const productos = (req.session.rol === 'admin' || req.session.rol === 'vendedor') ? await Producto.todosAdmin() : await Producto.todos(q || '');
   res.render('tienda/productos', { titulo: 'Productos', productos, q: q || '' });
 };
 
 // Detalle de producto
 exports.detalleProducto = async (req, res) => {
   const { id } = req.params;
-  const producto = await Producto.porId(id);
+  const producto = (req.session.rol === 'admin' || req.session.rol === 'vendedor') ? await Producto.porIdAdmin(id) : await Producto.porId(id);
   if (!producto) return res.redirect('/productos');
   res.render('tienda/producto_detalle', { titulo: 'Producto', producto });
 };

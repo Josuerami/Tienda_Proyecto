@@ -54,6 +54,26 @@ app.use((req, res) => {
   res.status(404).render('tienda/404', { titulo: 'Página no encontrada' });
 });
 
+// Comprobar esquema (agregar columna vendedor_id si falta)
+const db = require('./config/db');
+(async () => {
+  try {
+    const [rows] = await db.query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'productos' AND COLUMN_NAME = 'vendedor_id'");
+    if (!rows || rows.length === 0) {
+      console.log('Añadiendo columna vendedor_id a productos...');
+      await db.query('ALTER TABLE productos ADD COLUMN vendedor_id INT DEFAULT NULL');
+      try {
+        await db.query('ALTER TABLE productos ADD CONSTRAINT fk_productos_vendedor FOREIGN KEY (vendedor_id) REFERENCES usuarios(id)');
+      } catch (fkErr) {
+        console.warn('No se pudo crear la FK vendedor -> usuarios:', fkErr.message);
+      }
+      console.log('Columna vendedor_id añadida');
+    }
+  } catch (err) {
+    console.error('Error al comprobar o actualizar esquema:', err.message);
+  }
+})();
+
 // Arrancar servidor
 app.listen(PORT, () => {
   console.log(`✅ Tienda Canelitos corriendo en http://localhost:${PORT}`);

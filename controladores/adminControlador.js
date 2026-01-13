@@ -7,6 +7,7 @@ const Orden = require('../modelos/Orden');
 const Ticket = require('../modelos/Ticket');
 const db = require('../config/db');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 
 const almacenamiento = multer.diskStorage({
@@ -40,35 +41,93 @@ exports.formAgregarProducto = async (req, res) => {
 exports.agregarProducto = async (req, res) => {
   const { nombre, descripcion, precio, categoria_id, stock, marca, proveedor, fecha_registro } = req.body;
   const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : null; // AQUÍ VA LA IMAGEN
-  await Producto.crear({ nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro, activo: 1 });
-  res.redirect('/admin');
+  const vendedor_id = req.session.usuario ? req.session.usuario.id : null;
+  await Producto.crear({ nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro, activo: 1, vendedor_id });
+  res.redirect('/admin/productos');
 };
 
 // Mostrar formulario de edición de producto
 exports.formEditarProducto = async (req, res) => {
   const { id } = req.params;
-  const producto = await Producto.porId(id);
+  const producto = await Producto.porIdAdmin(id);
   if (!producto) return res.redirect('/admin');
+  // Si es vendedor, verificar que sea propietario
+  if (req.session.rol === 'vendedor' && producto.vendedor_id && producto.vendedor_id !== req.session.usuario.id) return res.redirect('/admin/productos');
   const categorias = await Categoria.todas();
   res.render('admin/producto_editar', { titulo: 'Editar producto', producto, categorias });
 };
 
 // Procesar edición de producto
 exports.editarProducto = async (req, res) => {
-  const { id } = req.params;
-  const { nombre, descripcion, precio, categoria_id, stock, marca, proveedor, fecha_registro } = req.body;
-  const producto = await Producto.porId(id);
-  if (!producto) return res.redirect('/admin');
-  const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : producto.ruta_imagen;
-  await Producto.actualizar(id, { nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro });
-  res.redirect('/admin');
+  try {
+    const { id } = req.params;
+    console.log('editarProducto called for id=', id, 'body=', req.body, 'file=', req.file ? req.file.filename : null, 'session=', req.session && req.session.usuario ? req.session.usuario.id : null);
+    const { nombre, descripcion, precio, categoria_id, stock, marca, proveedor, fecha_registro } = req.body;
+    const producto = await Producto.porIdAdmin(id);
+    if (!producto) return res.redirect('/admin');
+    if (req.session.rol === 'vendedor' && producto.vendedor_id && producto.vendedor_id !== req.session.usuario.id) return res.redirect('/admin/productos');
+    const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : producto.ruta_imagen;
+    const ok = await Producto.actualizar(id, { nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro });
+    console.log('Producto.actualizar result=', ok);
+    res.redirect('/admin/productos');
+  } catch (err) {
+    console.error('Error editarProducto', err);
+    res.status(500).send('Error al actualizar producto');
+  }
 };
 
-// Eliminar producto (soft delete)
+// Eliminar producto permanentemente (borrado físico)
 exports.eliminarProducto = async (req, res) => {
+  try {
+    const producto_id = Number(req.body.producto_id);
+    console.log('eliminarProducto called producto_id=', producto_id, 'session=', req.session && req.session.usuario ? req.session.usuario.id : null);
+    const producto = await Producto.porIdAdmin(producto_id);
+    if (!producto) return res.redirect('/admin/productos');
+    if (req.session.rol === 'vendedor' && producto.vendedor_id && producto.vendedor_id !== req.session.usuario.id) return res.redirect('/admin/productos');
+
+    const deleted = await Producto.eliminarPermanente(producto_id);
+    console.log('Producto.eliminarPermanente result=', deleted);
+
+    if (deleted && deleted > 0) {
+      // Borrar archivo de imagen si existe
+      if (producto.ruta_imagen) {
+        try {
+          const rutaArchivo = path.join(__dirname, '..', producto.ruta_imagen);
+          await fs.promises.unlink(rutaArchivo);
+          console.log('Imagen eliminada:', rutaArchivo);
+        } catch (e) {
+          console.warn('No se pudo eliminar imagen del producto:', e.message || e);
+        }
+      }
+      return res.redirect('/admin/productos');
+    }
+
+    // Si no se eliminó físicamente, hacer soft delete como fallback
+    console.warn('No se eliminaron filas (id=', producto_id, '), aplicando soft delete como fallback');
+    await Producto.eliminar(producto_id);
+    res.redirect('/admin/productos');
+  } catch (err) {
+    console.error('Error eliminarProducto', err);
+    res.status(500).send('Error al eliminar producto');
+  }
+};
+
+
+
+// Listar productos (panel administrador)
+exports.listarProductos = async (req, res) => {
+  const productos = await Producto.todosAdmin();
+  res.render('admin/productos', { titulo: 'Productos', productos });
+};
+
+// Restaurar producto (volver a activo)
+exports.restaurarProducto = async (req, res) => {
   const { producto_id } = req.body;
-  await Producto.eliminar(producto_id);
-  res.redirect('/admin/inventario');
+  const producto = await Producto.porIdAdmin(producto_id);
+  if (!producto) return res.redirect('/admin/productos');
+  if (req.session.rol === 'vendedor' && producto.vendedor_id && producto.vendedor_id !== req.session.usuario.id) return res.redirect('/admin/productos');
+  await Producto.restaurar(producto_id);
+  res.redirect('/admin/productos');
 };
 
 exports.formAgregarEmpleado = (req, res) => {

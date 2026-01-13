@@ -11,6 +11,14 @@
   <form method="post" action="/carrito/agregar/<%= producto.id %>">
     <button class="btn" type="submit">Agregar al carrito</button>
   </form>
+
+  <% if (rol === 'admin' || rol === 'vendedor') { %>
+    <a class="btn" href="/admin/productos/editar/<%= producto.id %>">Editar producto</a>
+    <form style="display:inline-block" method="post" action="/admin/productos/eliminar" onsubmit="return confirm('¿Eliminar producto?')">
+      <input type="hidden" name="producto_id" value="<%= producto.id %>">
+      <button class="btn btn-danger" type="submit">Eliminar producto</button>
+    </form>
+  <% } %>
 </section>
 
 <%- include('../parciales/pie') %>
