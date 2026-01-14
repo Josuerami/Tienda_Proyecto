@@ -4,6 +4,37 @@
   <h1 class="titulo">Acerca de Tienda Canelitos</h1>
   <p>Somos una tienda en línea dedicada a ofrecer productos de calidad con la mejor atención.</p>
   <p>Nuestra misión es brindar una experiencia de compra sencilla, segura y agradable.</p>
+
+  <hr />
+  <h2 class="titulo">Deja una reseña</h2>
+  <form method="post" action="/acerca/enviar">
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" name="nombre" placeholder="Tu nombre (opcional)">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" placeholder="Tu email (opcional)">
+    </div>
+    <div class="form-group">
+      <label>Reseña</label>
+      <textarea name="mensaje" required></textarea>
+    </div>
+    <button class="btn" type="submit">Enviar reseña</button>
+  </form>
+
+  <h3>Reseñas recientes</h3>
+  <ul class="reseñas">
+    <% (reseñas||[]).forEach(function(r) { %>
+      <li class="reseña">
+        <p><strong><%= r.nombre || (r.usuario_email || 'Anónimo') %></strong> <small><%= new Date(r.fecha_creacion).toLocaleString() %></small></p>
+        <p><%= r.mensaje %></p>
+        <% if (r.resuelta) { %>
+          <span class="badge success">Resuelta</span>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
 </section>
 
 <%- include('../parciales/pie') %>

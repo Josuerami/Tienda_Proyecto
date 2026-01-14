@@ -50,8 +50,17 @@ exports.agregarCarrito = async (req, res) => {
 };
 
 // Vaciar carrito
-exports.vaciarCarrito = (req, res) => {
+const Carrito = require('../modelos/Carrito');
+
+exports.vaciarCarrito = async (req, res) => {
   req.session.carrito = [];
+  if (req.session.usuario) {
+    try {
+      await Carrito.vaciar(req.session.usuario.id);
+    } catch (err) {
+      console.error('Error vaciar carrito persistente:', err);
+    }
+  }
   res.redirect('/carrito');
 };
 
@@ -107,8 +116,24 @@ exports.ticket = async (req, res) => {
 };
 
 // Acerca
-exports.acerca = (req, res) => {
-  res.render('tienda/acerca', { titulo: 'Acerca de' });
+const Resena = require('../modelos/Resena');
+
+exports.acerca = async (req, res) => {
+  const reseñas = await Resena.todas();
+  res.render('tienda/acerca', { titulo: 'Acerca de', reseñas });
+};
+
+exports.enviarResena = async (req, res) => {
+  try {
+    const { nombre, email, mensaje } = req.body;
+    const usuario_id = req.session.usuario ? req.session.usuario.id : null;
+    await Resena.crear({ usuario_id, nombre, email, mensaje, producto_id: null });
+    req.session.mensaje = 'Gracias por tu reseña.';
+    res.redirect('/acerca');
+  } catch (err) {
+    console.error('Error enviarResena', err);
+    res.status(500).send('Error al enviar reseña');
+  }
 };
 
 // Contacto (formulario)

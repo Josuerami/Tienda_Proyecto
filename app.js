@@ -38,6 +38,8 @@ app.use((req, res, next) => {
   res.locals.usuario = req.session.usuario || null;
   res.locals.rol = req.session.rol || 'invitado';
   res.locals.carrito = req.session.carrito || [];
+  res.locals.mensaje = req.session.mensaje || null;
+  delete req.session.mensaje;
   next();
 });
 
@@ -72,6 +74,50 @@ const db = require('./config/db');
   } catch (err) {
     console.error('Error al comprobar o actualizar esquema:', err.message);
   }
+
+  // Crear tabla resenas si no existe
+  (async () => {
+    try {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS resenas (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          usuario_id INT DEFAULT NULL,
+          nombre VARCHAR(255),
+          email VARCHAR(255),
+          mensaje TEXT NOT NULL,
+          producto_id INT DEFAULT NULL,
+          resuelta TINYINT(1) DEFAULT 0,
+          fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+      `);
+      console.log('Tabla resenas OK');
+    } catch (err) {
+      console.error('Error creando tabla resenas:', err.message);
+    }
+  })();
+
+  // Crear tabla carrito_items si no existe
+  (async () => {
+    try {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS carrito_items (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          usuario_id INT NOT NULL,
+          producto_id INT NOT NULL,
+          cantidad INT DEFAULT 1,
+          fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE KEY ux_usuario_producto (usuario_id, producto_id),
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+          FOREIGN KEY (producto_id) REFERENCES productos(id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+      `);
+      console.log('Tabla carrito_items OK');
+    } catch (err) {
+      console.error('Error creando tabla carrito_items:', err.message);
+    }
+  })();
+
 })();
 
 // Arrancar servidor

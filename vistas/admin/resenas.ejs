@@ -1,0 +1,48 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Reseñas</h2>
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre / Usuario</th>
+        <th>Email</th>
+        <th>Mensaje</th>
+        <th>Resuelta</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% resenas.forEach(function(r) { %>
+      <tr>
+        <td><%= r.id %></td>
+        <td><%= r.nombre || r.usuario_email || 'Anónimo' %></td>
+        <td><%= r.email || '' %></td>
+        <td><%= r.mensaje %></td>
+        <td>
+          <% if (r.resuelta) { %>
+            <span class="badge success">Resuelta</span>
+          <% } else { %>
+            <span class="badge">Pendiente</span>
+          <% } %>
+        </td>
+        <td>
+          <% if (!r.resuelta) { %>
+            <form style="display:inline-block" method="post" action="/admin/resenas/resuelta">
+              <input type="hidden" name="resena_id" value="<%= r.id %>">
+              <button class="btn success" type="submit">Resuelta</button>
+            </form>
+          <% } %>
+          <form style="display:inline-block" method="post" action="/admin/resenas/eliminar" onsubmit="return confirm('¿Eliminar reseña?')">
+            <input type="hidden" name="resena_id" value="<%= r.id %>">
+            <button class="btn danger" type="submit">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../parciales/pie') %>

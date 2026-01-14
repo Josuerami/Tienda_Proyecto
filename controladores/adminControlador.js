@@ -202,6 +202,27 @@ exports.pedidosEliminar = async (req, res) => {
   res.redirect('/admin/pedidos');
 };
 
+// --- Reseñas ---
+exports.listarResenas = async (req, res) => {
+  const Resena = require('../modelos/Resena');
+  const resenas = await Resena.todas();
+  res.render('admin/resenas', { titulo: 'Reseñas', resenas });
+};
+
+exports.eliminarResena = async (req, res) => {
+  const Resena = require('../modelos/Resena');
+  const { resena_id } = req.body;
+  await Resena.eliminar(resena_id);
+  res.redirect('/admin/resenas');
+};
+
+exports.marcarResuelta = async (req, res) => {
+  const Resena = require('../modelos/Resena');
+  const { resena_id } = req.body;
+  await Resena.marcarResuelta(resena_id);
+  res.redirect('/admin/resenas');
+};
+
 // --- Gestión de usuarios por administradores ---
 exports.listarUsuarios = async (req, res) => {
   const Usuario = require('../modelos/Usuario');

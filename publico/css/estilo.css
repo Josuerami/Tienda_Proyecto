@@ -186,3 +186,25 @@ body {
   gap: 8px;
   margin-top: 12px;
 }
+
+/* Badges */
+.badge {
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:12px;
+  background:#eee;
+  color:#333;
+  font-size:0.85rem;
+}
+.badge.success { background: #2ecc71; color: white; }
+
+/* Mensaje pequeño en el encabezado */
+.mensaje-success {
+  margin-left: 12px;
+  background: #2ecc71;
+  color: white;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:0.9rem;
+}
+

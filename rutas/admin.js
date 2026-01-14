@@ -36,6 +36,11 @@ router.post('/inventario/eliminar', esAdmin, ctrl.inventarioEliminar);
 router.get('/pedidos', esAdmin, ctrl.pedidos);
 router.post('/pedidos/eliminar', esAdmin, ctrl.pedidosEliminar);
 
+// Rutas para gestión de reseñas (solo admin)
+router.get('/resenas', esAdmin, ctrl.listarResenas);
+router.post('/resenas/eliminar', esAdmin, ctrl.eliminarResena);
+router.post('/resenas/resuelta', esAdmin, ctrl.marcarResuelta);
+
 // Rutas para gestión de usuarios (solo admin)
 router.get('/usuarios', esAdmin, ctrl.listarUsuarios);
 router.get('/usuarios/:id', esAdmin, ctrl.verUsuario);

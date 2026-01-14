@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Producto = require('../modelos/Producto');
+const Carrito = require('../modelos/Carrito');
 const PDFDocument = require('pdfkit'); // librería para generar PDF
 
 // ✅ Middleware para exigir login
@@ -42,7 +43,16 @@ router.post('/carrito/agregar/:id', requireLogin, async (req, res) => {
       });
     }
 
-    res.redirect('/carrito');
+    // Persistir en BD para el usuario
+    try {
+      await Carrito.agregarItem(req.session.usuario.id, producto.id, 1);
+    } catch (err) {
+      console.error('Error al persistir carrito en BD:', err);
+    }
+
+    // Mostrar mensaje y volver a la página anterior en lugar de forzar ir al carrito
+    req.session.mensaje = 'Agregaste al carrito';
+    return res.redirect(req.get('Referer') || '/productos');
   } catch (err) {
     console.error('Error al agregar al carrito:', err);
     res.redirect('/productos');
@@ -58,9 +68,15 @@ router.get('/carrito', requireLogin, (req, res) => {
 });
 
 // Eliminar producto del carrito (requiere login)
-router.post('/carrito/eliminar/:id', requireLogin, (req, res) => {
+router.post('/carrito/eliminar/:id', requireLogin, async (req, res) => {
   const id = parseInt(req.params.id);
   req.session.carrito = (req.session.carrito || []).filter(p => p.id !== id);
+  // También eliminar de la BD persistente
+  try {
+    await Carrito.eliminarItem(req.session.usuario.id, id);
+  } catch (err) {
+    console.error('Error al eliminar item del carrito persistente:', err);
+  }
   res.redirect('/carrito');
 });
 

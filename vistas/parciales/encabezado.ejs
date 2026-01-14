@@ -18,6 +18,9 @@
     <% if (rol === 'admin' || rol === 'vendedor') { %><a class="inline" href="/admin">Admin</a><% } %>
     <% if (rol === 'vendedor') { %><a class="inline" href="/vendedor">Vendedor</a><% } %>
     <a class="inline" href="/carrito">Carrito (<%= (carrito||[]).length %>)</a>
+  <% if (mensaje) { %>
+    <span class="inline mensaje-success"><%= mensaje %></span>
+  <% } %>
     <% if (!usuario) { %>
       <a class="inline" href="/auth/login">Entrar</a>
       <a class="inline" href="/auth/registro">Registro</a>

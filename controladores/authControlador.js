@@ -30,6 +30,16 @@ exports.ingresar = async (req, res) => {
     req.session.usuario = usuario;
     req.session.rol = usuario.rol;
 
+    // Cargar carrito persistente del usuario
+    try {
+      const Carrito = require('../modelos/Carrito');
+      const items = await Carrito.obtenerPorUsuario(usuario.id);
+      req.session.carrito = items.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, cantidad: i.cantidad }));
+    } catch (err) {
+      console.error('Error cargando carrito persistente en login:', err);
+      req.session.carrito = req.session.carrito || [];
+    }
+
     res.render('auth/bienvenido', {
       titulo: 'Bienvenido',
       nombre: usuario.nombre
@@ -81,6 +91,16 @@ exports.registrar = async (req, res) => {
     // Guardar objeto completo en sesión
     req.session.usuario = usuario;
     req.session.rol = 'cliente';
+
+    // Cargar carrito persistente del usuario recién registrado (vacío normalmente)
+    try {
+      const Carrito = require('../modelos/Carrito');
+      const items = await Carrito.obtenerPorUsuario(usuario.id);
+      req.session.carrito = items.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, cantidad: i.cantidad }));
+    } catch (err) {
+      console.error('Error cargando carrito persistente en registro:', err);
+      req.session.carrito = req.session.carrito || [];
+    }
 
     res.render('auth/bienvenido', {
       titulo: 'Bienvenido',
