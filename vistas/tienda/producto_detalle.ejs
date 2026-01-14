@@ -2,7 +2,7 @@
 
 <section class="panel">
   <h1 class="titulo"><%= producto.nombre %></h1>
-  <img class="card-img" src="<%= producto.ruta_imagen ? '/uploads/' + producto.ruta_imagen : '/uploads/placeholder.png' %>" alt="<%= producto.nombre %>">
+  <img class="card-img" src="<%= producto.ruta_imagen ? '/uploads/' + producto.ruta_imagen.replace(/^.*[\\\/]/,'') : '/uploads/placeholder.png' %>" alt="<%= producto.nombre %>">
 
   <p><strong>Precio:</strong> $<%= Number(producto.precio).toFixed(2) %></p>
   <p><strong>Categoría:</strong> <%= producto.nombre_categoria || 'N/A' %></p>

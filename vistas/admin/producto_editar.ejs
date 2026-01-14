@@ -16,7 +16,7 @@
     <label>Marca</label><input class="input" type="text" name="marca" value="<%= producto.marca %>">
     <label>Proveedor</label><input class="input" type="text" name="proveedor" value="<%= producto.proveedor %>">
     <label>Fecha de registro</label><input class="input" type="date" name="fecha_registro" value="<%= producto.fecha_registro ? (producto.fecha_registro.toISOString ? producto.fecha_registro.toISOString().split('T')[0] : producto.fecha_registro.split('T')[0]) : '' %>" required>
-    <p>Imagen actual: <%= producto.ruta_imagen ? ('/' + producto.ruta_imagen) : 'Sin imagen' %></p>
+    <p>Imagen actual: <%= producto.ruta_imagen ? ('/uploads/' + producto.ruta_imagen.replace(/^.*[\\\/]/,'')) : 'Sin imagen' %></p>
     <label>Nueva imagen (opcional)</label>
     <input class="input" type="file" name="imagen" accept="image/*">
     <button class="btn" type="submit">Guardar cambios</button>

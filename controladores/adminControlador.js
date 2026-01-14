@@ -40,7 +40,7 @@ exports.formAgregarProducto = async (req, res) => {
 
 exports.agregarProducto = async (req, res) => {
   const { nombre, descripcion, precio, categoria_id, stock, marca, proveedor, fecha_registro } = req.body;
-  const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : null; // AQUÍ VA LA IMAGEN
+  const ruta_imagen = req.file ? req.file.filename : null; // guardamos solo el nombre del archivo
   const vendedor_id = req.session.usuario ? req.session.usuario.id : null;
   await Producto.crear({ nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro, activo: 1, vendedor_id });
   res.redirect('/admin/productos');
@@ -66,9 +66,19 @@ exports.editarProducto = async (req, res) => {
     const producto = await Producto.porIdAdmin(id);
     if (!producto) return res.redirect('/admin');
     if (req.session.rol === 'vendedor' && producto.vendedor_id && producto.vendedor_id !== req.session.usuario.id) return res.redirect('/admin/productos');
-    const ruta_imagen = req.file ? path.join('publico', 'uploads', req.file.filename) : producto.ruta_imagen;
-    const ok = await Producto.actualizar(id, { nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro });
-    console.log('Producto.actualizar result=', ok);
+    const ruta_imagen = req.file ? req.file.filename : (producto.ruta_imagen ? path.basename(producto.ruta_imagen) : null);
+    // Si sube una nueva imagen, borrar la anterior
+    if (req.file && producto.ruta_imagen) {
+      try {
+        const viejoNombre = path.basename(producto.ruta_imagen);
+        const rutaArchivoViejo = path.join(__dirname, '..', 'publico', 'uploads', viejoNombre);
+        await fs.promises.unlink(rutaArchivoViejo);
+      } catch (e) {
+        console.warn('No se pudo eliminar imagen vieja:', e.message || e);
+      }
+    }
+    const updated = await Producto.actualizar(id, { nombre, descripcion, precio, categoria_id, ruta_imagen, stock, marca, proveedor, fecha_registro });
+    console.log('Producto.actualizar result=', updated);
     res.redirect('/admin/productos');
   } catch (err) {
     console.error('Error editarProducto', err);
@@ -92,7 +102,8 @@ exports.eliminarProducto = async (req, res) => {
       // Borrar archivo de imagen si existe
       if (producto.ruta_imagen) {
         try {
-          const rutaArchivo = path.join(__dirname, '..', producto.ruta_imagen);
+          const nombreArchivo = path.basename(producto.ruta_imagen);
+          const rutaArchivo = path.join(__dirname, '..', 'publico', 'uploads', nombreArchivo);
           await fs.promises.unlink(rutaArchivo);
           console.log('Imagen eliminada:', rutaArchivo);
         } catch (e) {

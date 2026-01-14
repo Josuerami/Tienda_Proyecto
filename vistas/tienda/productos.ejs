@@ -6,7 +6,7 @@
   <div class="grid">
     <% productos.forEach(p => { %>
       <div class="card">
-        <img class="card-img" src="<%= p.ruta_imagen ? '/uploads/' + p.ruta_imagen : '/uploads/placeholder.png' %>" alt="<%= p.nombre %>">
+        <img class="card-img" src="<%= p.ruta_imagen ? '/uploads/' + p.ruta_imagen.replace(/^.*[\\\/]/,'') : '/uploads/placeholder.png' %>" alt="<%= p.nombre %>">
         <div class="card-titulo"><%= p.nombre %></div>
         <div class="card-sub">Categoría: <%= p.nombre_categoria || 'N/A' %></div>
         <div class="card-precio">$<%= Number(p.precio).toFixed(2) %></div>
