@@ -36,4 +36,9 @@ router.post('/inventario/eliminar', esAdmin, ctrl.inventarioEliminar);
 router.get('/pedidos', esAdmin, ctrl.pedidos);
 router.post('/pedidos/eliminar', esAdmin, ctrl.pedidosEliminar);
 
+// Rutas para gestión de usuarios (solo admin)
+router.get('/usuarios', esAdmin, ctrl.listarUsuarios);
+router.get('/usuarios/:id', esAdmin, ctrl.verUsuario);
+router.post('/usuarios/eliminar', esAdmin, ctrl.eliminarUsuario);
+
 module.exports = router;

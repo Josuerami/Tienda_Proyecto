@@ -25,6 +25,12 @@ exports.buscarPorId = async (id) => {
   return rows[0] || null;
 };
 
+// Obtener todos los usuarios
+exports.todos = async () => {
+  const [rows] = await pool.query('SELECT * FROM usuarios ORDER BY id DESC');
+  return rows;
+};
+
 exports.actualizar = async (id, fields) => {
   // fields: { nombre, apellido_paterno, apellido_materno, email, password_hash, rol }
   const sets = [];

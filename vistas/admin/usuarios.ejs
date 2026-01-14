@@ -1,0 +1,39 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Usuarios</h2>
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% usuarios.forEach(function(u) { %>
+      <tr>
+        <td><%= u.id %></td>
+        <td><%= u.nombre %> <%= u.apellido_paterno %></td>
+        <td><%= u.email %></td>
+        <td><%= u.rol %></td>
+        <td>
+          <a class="btn" href="/admin/usuarios/<%= u.id %>">Ver</a>
+          <% if (!(usuario && usuario.id === u.id)) { %>
+          <form style="display:inline-block" method="post" action="/admin/usuarios/eliminar" onsubmit="return confirm('¿Eliminar usuario?');">
+            <input type="hidden" name="usuario_id" value="<%= u.id %>">
+            <button class="btn danger" type="submit">Eliminar</button>
+          </form>
+          <% } else { %>
+            <span class="muted">(tu cuenta)</span>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../parciales/pie') %>

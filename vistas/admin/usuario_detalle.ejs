@@ -1,0 +1,26 @@
+<%- include('../parciales/encabezado') %>
+
+<section class="panel">
+  <h2 class="titulo">Detalle de usuario</h2>
+  <div class="detalle">
+    <p><strong>ID:</strong> <%= usuario.id %></p>
+    <p><strong>Nombre:</strong> <%= usuario.nombre %> <%= usuario.apellido_paterno %> <%= usuario.apellido_materno %></p>
+    <p><strong>Email:</strong> <%= usuario.email %></p>
+    <p><strong>Rol:</strong> <%= usuario.rol %></p>
+    <p><strong>Fecha de creación:</strong> <%= usuario.fecha_creacion %></p>
+
+    <div class="acciones">
+      <a class="btn" href="/admin/usuarios">Volver</a>
+      <% if (!(sesionUsuario && sesionUsuario.id === usuario.id)) { %>
+      <form method="post" action="/admin/usuarios/eliminar" onsubmit="return confirm('¿Eliminar usuario?');" style="display:inline-block;">
+        <input type="hidden" name="usuario_id" value="<%= usuario.id %>">
+        <button class="btn danger" type="submit">Eliminar</button>
+      </form>
+      <% } else { %>
+        <span class="muted">No puedes eliminar tu propia cuenta desde aquí</span>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('../parciales/pie') %>

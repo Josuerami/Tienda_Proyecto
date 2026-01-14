@@ -190,3 +190,37 @@ exports.pedidosEliminar = async (req, res) => {
   await Orden.eliminar(pedido_id);
   res.redirect('/admin/pedidos');
 };
+
+// --- Gestión de usuarios por administradores ---
+exports.listarUsuarios = async (req, res) => {
+  const Usuario = require('../modelos/Usuario');
+  const usuarios = await Usuario.todos();
+  res.render('admin/usuarios', { titulo: 'Usuarios', usuarios, usuario: req.session.usuario });
+};
+
+exports.verUsuario = async (req, res) => {
+  const Usuario = require('../modelos/Usuario');
+  const { id } = req.params;
+  const usuario = await Usuario.buscarPorId(id);
+  if (!usuario) return res.redirect('/admin/usuarios');
+  res.render('admin/usuario_detalle', { titulo: 'Detalle de usuario', usuario, sesionUsuario: req.session.usuario });
+};
+
+exports.eliminarUsuario = async (req, res) => {
+  try {
+    const Usuario = require('../modelos/Usuario');
+    const { usuario_id } = req.body;
+    const idNum = Number(usuario_id);
+
+    // Evitar que el admin se elimine a sí mismo accidentalmente
+    if (req.session.usuario && req.session.usuario.id === idNum) {
+      return res.redirect('/admin/usuarios');
+    }
+
+    await Usuario.eliminar(idNum);
+    res.redirect('/admin/usuarios');
+  } catch (err) {
+    console.error('Error eliminarUsuario', err);
+    res.status(500).send('Error al eliminar usuario');
+  }
+};
