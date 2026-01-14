@@ -32,6 +32,15 @@
         <% if (r.resuelta) { %>
           <span class="badge success">Resuelta</span>
         <% } %>
+        <% if (usuario && r.usuario_id === usuario.id) { %>
+          <form style="display:inline" method="post" action="/acerca/editar/<%= r.id %>">
+            <textarea name="mensaje" required><%= r.mensaje %></textarea>
+            <button type="submit">Editar</button>
+          </form>
+          <form style="display:inline" method="post" action="/acerca/eliminar/<%= r.id %>" onsubmit="return confirm('¿Eliminar reseña?')">
+            <button type="submit">Eliminar</button>
+          </form>
+        <% } %>
       </li>
     <% }) %>
   </ul>

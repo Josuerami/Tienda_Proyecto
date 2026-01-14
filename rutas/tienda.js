@@ -7,6 +7,8 @@ router.get('/productos', ctrl.listarProductos);
 router.get('/producto/:id', ctrl.detalleProducto);
 router.get('/acerca', ctrl.acerca);
 router.post('/acerca/enviar', ctrl.enviarResena);
+router.post('/acerca/editar/:id', ctrl.editarResena);
+router.post('/acerca/eliminar/:id', ctrl.eliminarResena);
 router.post('/carrito/agregar', ctrl.agregarCarrito);
 router.post('/carrito/vaciar', ctrl.vaciarCarrito);
 router.get('/carrito', ctrl.verCarrito);

@@ -136,6 +136,41 @@ exports.enviarResena = async (req, res) => {
   }
 };
 
+exports.editarResena = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { mensaje } = req.body;
+    const usuario_id = req.session.usuario.id;
+    const affectedRows = await Resena.actualizar(id, usuario_id, mensaje);
+    if (affectedRows > 0) {
+      req.session.mensaje = 'Reseña actualizada correctamente.';
+    } else {
+      req.session.mensaje = 'No se pudo actualizar la reseña.';
+    }
+    res.redirect('/acerca');
+  } catch (err) {
+    console.error('Error editarResena', err);
+    res.status(500).send('Error al editar reseña');
+  }
+};
+
+exports.eliminarResena = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuario_id = req.session.usuario.id;
+    const affectedRows = await Resena.eliminarPorUsuario(id, usuario_id);
+    if (affectedRows > 0) {
+      req.session.mensaje = 'Reseña eliminada correctamente.';
+    } else {
+      req.session.mensaje = 'No se pudo eliminar la reseña.';
+    }
+    res.redirect('/acerca');
+  } catch (err) {
+    console.error('Error eliminarResena', err);
+    res.status(500).send('Error al eliminar reseña');
+  }
+};
+
 // Contacto (formulario)
 exports.contacto = (req, res) => {
   const ok = !!req.query.ok;

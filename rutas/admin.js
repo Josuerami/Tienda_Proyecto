@@ -22,7 +22,6 @@ router.get('/productos/editar/:id', esAdminOVendedor, ctrl.formEditarProducto);
 router.post('/productos/editar/:id', esAdminOVendedor, ctrl.middlewareSubida, ctrl.editarProducto);
 // Eliminar producto
 router.post('/productos/eliminar', esAdminOVendedor, ctrl.eliminarProducto);
-router.post('/productos/restaurar', esAdmin, ctrl.restaurarProducto);
 
 router.get('/empleados/agregar', esAdmin, ctrl.formAgregarEmpleado);
 router.post('/empleados/agregar', esAdmin, ctrl.agregarEmpleado);

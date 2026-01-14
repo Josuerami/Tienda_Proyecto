@@ -28,5 +28,15 @@ module.exports = {
   async marcarResuelta(id) {
     const [res] = await db.query('UPDATE resenas SET resuelta = 1 WHERE id = ?', [id]);
     return res && res.affectedRows ? res.affectedRows : 0;
+  },
+
+  async actualizar(id, usuario_id, mensaje) {
+    const [res] = await db.query('UPDATE resenas SET mensaje = ? WHERE id = ? AND usuario_id = ?', [mensaje, id, usuario_id]);
+    return res && res.affectedRows ? res.affectedRows : 0;
+  },
+
+  async eliminarPorUsuario(id, usuario_id) {
+    const [res] = await db.query('DELETE FROM resenas WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+    return res && res.affectedRows ? res.affectedRows : 0;
   }
 };
